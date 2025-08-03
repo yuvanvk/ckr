@@ -4,12 +4,11 @@ import { socket } from "@/lib/socket"
 import { Button } from "@workspace/ui/components/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@workspace/ui/components/card"
 import { Input } from "@workspace/ui/components/input"
-import { Label } from "@workspace/ui/components/label"
-import { Separator } from "@workspace/ui/components/separator"
+
 
 import { Send, Users, LogOut, MessageCircle } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import { SetStateAction, useEffect, useState } from "react"
 
 interface Message {
   username: string
@@ -52,7 +51,7 @@ export default function RoomPage() {
     }
 
     // Join room
-    socket.emit("join_room", { username: storedUsername, room: storedRoom }, (response) => {
+    socket.emit("join_room", { username: storedUsername, room: storedRoom }, (response: { success: any; participants: any; message: SetStateAction<string> }) => {
       if (response.success) {
         setIsConnected(true)
         setParticipants(response.participants || [])
@@ -67,7 +66,7 @@ export default function RoomPage() {
     })
 
     // Listen for user joined
-    socket.on("user_joined", (data) => {
+    socket.on("user_joined", (data: { message: any }) => {
       setMessages(prev => [...prev, {
         username: "System",
         message: data.message,
@@ -76,7 +75,7 @@ export default function RoomPage() {
     })
 
     // Listen for user left
-    socket.on("user_left", (data) => {
+    socket.on("user_left", (data: { message: any }) => {
       setMessages(prev => [...prev, {
         username: "System",
         message: data.message,
@@ -100,7 +99,7 @@ export default function RoomPage() {
   const sendMessage = () => {
     if (!newMessage.trim() || !isConnected) return
 
-    socket.emit("send_message", { room, message: newMessage, username }, (response) => {
+    socket.emit("send_message", { room, message: newMessage, username }, (response: { success: any; message: SetStateAction<string> }) => {
       if (response.success) {
         setNewMessage("")
       } else {
@@ -110,7 +109,7 @@ export default function RoomPage() {
   }
 
   const leaveRoom = () => {
-    socket.emit("leave_room", {}, (response) => {
+    socket.emit("leave_room", {}, (response: { success: any }) => {
       if (response.success) {
         localStorage.removeItem("username")
         localStorage.removeItem("room")

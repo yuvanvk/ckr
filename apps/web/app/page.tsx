@@ -57,9 +57,6 @@ export default function Page() {
           </Card>
         </div>
 
-        <div className="text-center text-sm text-gray-500">
-          <p>Powered by Socket.IO and Next.js</p>
-        </div>
       </div>
     </div>
   )
