@@ -14,7 +14,7 @@ const io = new Server(server, {
   },
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = Number(process.env.PORT) || 3000;
 // Store active users and their room information
 interface User {
   id: string;
@@ -241,7 +241,6 @@ io.on("connection", (socket) => {
     console.log("User disconnected:", socket.id);
   });
 });
-
-server.listen(PORT, () => {
-  console.log(`Server listening at http://localhost:${PORT}`);
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server listening at http://0.0.0.0:${PORT}`);
 });
