@@ -4,12 +4,21 @@ import { Server } from "socket.io";
 import cors from "cors";
 
 const app = express();
-app.use(cors());
+
+const allowedOrigins = [
+  "http://localhost:3000", 
+  "https://ckr-web.vercel.app" 
+];
+
+app.use(cors({
+  origin: allowedOrigins,
+}));
 
 const server = createServer(app);
+
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:3000", "https://ckr-web.vercel.app/"],
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
   },
 });
