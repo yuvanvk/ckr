@@ -13,7 +13,7 @@ const io = new Server(server, {
     methods: ["GET", "POST"],
   },
 });
-
+const PORT = process.env.PORT || 8080;
 // Store active users and their room information
 interface User {
   id: string;
@@ -241,6 +241,6 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(8080, () => {
-  console.log("Server listening at http://localhost:8080");
+server.listen(PORT, () => {
+  console.log(`Server listening at http://localhost:${PORT}`);
 });
