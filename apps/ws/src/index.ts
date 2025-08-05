@@ -13,7 +13,8 @@ const io = new Server(server, {
     methods: ["GET", "POST"],
   },
 });
-const PORT = process.env.PORT || 8080;
+
+const PORT = process.env.PORT || 3000;
 // Store active users and their room information
 interface User {
   id: string;
