@@ -22,6 +22,22 @@ interface Participant {
   username: string
 }
 
+interface LanguageType {
+  javascript: string;
+  python: string;
+  c: string;
+  cpp: string;
+  java: string;
+  typescript: string;
+  go: string;
+  ruby: string;
+  php: string;
+  rust: string;
+  kotlin: string;
+  swift: string;
+  csharp: string;
+}
+
 export default function RoomPage() {
   const MonacoEditor = useMemo(() => dynamic(() => import("@monaco-editor/react"), { ssr: false }), [])
   const [selectedLanguage, setSelectedLanguage] = useState("javascript")
@@ -42,11 +58,15 @@ export default function RoomPage() {
     csharp: 'using System;\n\nclass Program\n{\n    static void Main()\n    {\n        Console.WriteLine("Hello, world!");\n    }\n}',
   }
 
-  const [code, setCode] = useState(languageCodes[selectedLanguage]);
+  
+
+
+  // Only initialize code once with the selected language
+  const [code, setCode] = useState(() => languageCodes[selectedLanguage as keyof typeof languageCodes] || "");
 
   useEffect(() => {
-    setCode(languageCodes[selectedLanguage]);
-  }, [selectedLanguage, languageCodes]);
+  setCode(languageCodes[selectedLanguage as keyof typeof languageCodes] || "");
+  }, [selectedLanguage]);
 
   const handleCodeChange = useCallback((value: string | undefined) => {
     setCode(value ?? "")
@@ -129,7 +149,7 @@ export default function RoomPage() {
       socket.connect()
     }
 
-    socket.emit("join_room", { username: storedUsername, room: storedRoom }, (response: { success: any; participants: any; message: SetStateAction<string> }) => {
+    socket.emit("join_room", { username: storedUsername, room: storedRoom }, (response: { success: boolean; participants: Participant[]; message: SetStateAction<string> }) => {
       if (response.success) {
         setIsConnected(true)
         setParticipants(response.participants || [])
